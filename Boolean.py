@@ -42,13 +42,24 @@ def assign_values(variables):
 		assigned_variables.append(assign(variables, values))
 	return [ assign(variables, values) for values in construct_variable_truth_combinations(variables)]
 
-# order of importance
-# NOT
-# XOR
-# AND
-# OR
-# IMPLICATION
-# EQUIVALENCE
+# ordered in importance HIGH -> LOW
+OPERATOR_SYNTAXES = [
+	"(not|!) OPERAND",
+	"OPERAND xor OPERAND",
+	"OPERAND and OPERAND",
+	"OPERAND or OPERAND",
+	"OPERAND implication OPERAND",
+	"OPERAND equivalence OPERAND"
+]
+
+def search(syntax, expression):
+	pattern = syntax.replace(" ", "").replace("OPERAND", r"\b\w\b")
+
+	if not pattern.startswith(r"\b"):
+		pattern = r"\b" + pattern
+
+	print(pattern)
+	return re.findall(pattern, expression)
 
 def parse(args):
 	pass
@@ -66,7 +77,4 @@ print(get_variables("!P and !Q or R"))
 print(truths)
 print(assign_values(variables))
 
-print(IMPLICATION(1, 1))
-print(IMPLICATION(1, 0))
-print(IMPLICATION(0, 1))
-print(IMPLICATION(0, 0))
+print(search("not OPERAND", "(not P implication not Q) and Q implication P"))
